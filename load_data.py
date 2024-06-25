@@ -6,9 +6,20 @@ WINDOW_SIZE = 10
 
 def read_file_to_df(file_name, sep):
     df_air = pl.read_csv(file_name, separator=sep)
-    return df_air
+    df = df_air.drop_nulls(subset="Date")
+    # Combine Date and Time columns into a single datetime string
+    df = df.with_columns((pl.col("Date") + " " + pl.col("Time")).alias("DateTimeString"))
+    # Convert the combined string to a datetime object
+    df = df.with_columns(pl.col("DateTimeString").str.to_datetime(pl.Datetime).alias("DateTime"))
+    # # Drop the intermediate DateTimeString column if not needed
+    # df = df.drop("DateTimeString")
+    return df
+
+def create_time_windows_dataframe():
+    return None
 
 def transform_data_into_time_windows(df, window_size):
+    df_win = []
     return df_win
 
 
